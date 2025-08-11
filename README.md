@@ -89,6 +89,21 @@ npm start
 
 The application will be available at `http://localhost:3000`
 
+## 🚀 Deployment
+
+### Deploy to Vercel (Recommended)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Vigh24/Ticket-tracker)
+
+1. Click the "Deploy with Vercel" button above
+2. Connect your GitHub account
+3. Set up environment variables:
+   - `REACT_APP_SUPABASE_URL`
+   - `REACT_APP_SUPABASE_ANON_KEY`
+4. Deploy!
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
 ## Database Schema
 
 The application uses the following tables:
