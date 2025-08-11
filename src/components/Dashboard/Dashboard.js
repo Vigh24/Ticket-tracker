@@ -443,7 +443,7 @@ const Dashboard = ({ session }) => {
               onEdit={handleEditTicket}
               onDelete={handleDeleteTicket}
             />
-          </div>
+          </motion.div>
         </motion.div>
       </main>
 
