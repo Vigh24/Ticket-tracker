@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { LogOut, User, FileText } from 'lucide-react';
 import Button from '../UI/Button';
 import ThemeToggle from '../UI/ThemeToggle';
+import FlappyGame from '../Game/FlappyGame';
 
 const Header = ({ user, onSignOut, onShowNotes }) => {
+  const [showGame, setShowGame] = useState(false);
+
   return (
-    <motion.header
+    <>
+      <FlappyGame
+        isOpen={showGame}
+        onClose={() => setShowGame(false)}
+      />
+      <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -15,14 +23,19 @@ const Header = ({ user, onSignOut, onShowNotes }) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <motion.h1
+            <motion.button
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
+              onClick={() => setShowGame(true)}
+              className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent hover:scale-105 transition-transform duration-200 cursor-pointer group"
+              title="🎮 Click for a surprise!"
             >
-              TicketTrack Pro
-            </motion.h1>
+              <span className="group-hover:animate-pulse">TicketTrack Pro</span>
+              <span className="ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm">
+                🎮
+              </span>
+            </motion.button>
           </div>
 
           <div className="flex items-center gap-3">
@@ -56,6 +69,7 @@ const Header = ({ user, onSignOut, onShowNotes }) => {
         </div>
       </div>
     </motion.header>
+    </>
   );
 };
 
