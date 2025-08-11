@@ -6,8 +6,6 @@ import {
   Download,
   Search,
   Filter,
-  Calendar,
-  ChevronDown,
   CheckCircle,
   Clock
 } from 'lucide-react';
@@ -32,7 +30,6 @@ const Dashboard = ({ session }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateRange, setDateRange] = useState({ start: null, end: null });
-  const [showDateFilter, setShowDateFilter] = useState(false);
   const [workDate, setWorkDate] = useState(new Date());
   const [viewMode, setViewMode] = useState('today'); // 'today', 'date-range', 'all-time'
   const [showAddTicket, setShowAddTicket] = useState(false);
@@ -174,9 +171,9 @@ const Dashboard = ({ session }) => {
         >
           <StatsCards tickets={filteredTickets} allTickets={tickets} dateRange={dateRange} />
 
-          <div className="mt-8 card">
+          <div className="mt-8 card dark:bg-gray-800/50 dark:border-gray-700/50 transition-colors duration-300">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">Tickets</h2>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">Tickets</h2>
               
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -208,35 +205,35 @@ const Dashboard = ({ session }) => {
             </div>
 
             {/* View Mode Controls */}
-            <div className="mb-6 p-4 bg-white/30 backdrop-blur-sm border border-white/30 rounded-lg">
+            <div className="mb-6 p-4 bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm border border-white/30 dark:border-gray-700/50 rounded-lg transition-colors duration-300">
               <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => setViewMode('today')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                       viewMode === 'today'
-                        ? 'bg-blue-500 text-white shadow-lg'
-                        : 'bg-white/50 text-gray-700 hover:bg-white/70'
+                        ? 'bg-blue-500 dark:bg-blue-600 text-white shadow-lg'
+                        : 'bg-white/50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-600/50'
                     }`}
                   >
                     Today
                   </button>
                   <button
                     onClick={() => setViewMode('date-range')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                       viewMode === 'date-range'
-                        ? 'bg-blue-500 text-white shadow-lg'
-                        : 'bg-white/50 text-gray-700 hover:bg-white/70'
+                        ? 'bg-blue-500 dark:bg-blue-600 text-white shadow-lg'
+                        : 'bg-white/50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-600/50'
                     }`}
                   >
                     Date Range
                   </button>
                   <button
                     onClick={() => setViewMode('all-time')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
                       viewMode === 'all-time'
-                        ? 'bg-blue-500 text-white shadow-lg'
-                        : 'bg-white/50 text-gray-700 hover:bg-white/70'
+                        ? 'bg-blue-500 dark:bg-blue-600 text-white shadow-lg'
+                        : 'bg-white/50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-600/50'
                     }`}
                   >
                     All Time
@@ -282,13 +279,13 @@ const Dashboard = ({ session }) => {
             <div className="space-y-4 mb-6">
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" size={20} />
                   <input
                     type="text"
                     placeholder="Search tickets..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="input-field pl-10"
+                    className="input-field pl-10 dark:bg-gray-800/50 dark:border-gray-700/50 dark:text-gray-200 dark:placeholder-gray-400 transition-colors duration-300"
                   />
                 </div>
 
@@ -306,19 +303,19 @@ const Dashboard = ({ session }) => {
               {/* Active Filters Display */}
               {(searchTerm || statusFilter !== 'all' || dateRange.start || dateRange.end) && (
                 <div className="flex flex-wrap gap-2 text-sm">
-                  <span className="text-gray-600">Active filters:</span>
+                  <span className="text-gray-600 dark:text-gray-400">Active filters:</span>
                   {searchTerm && (
-                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
+                    <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 rounded-full">
                       Search: "{searchTerm}"
                     </span>
                   )}
                   {statusFilter !== 'all' && (
-                    <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full">
+                    <span className="px-2 py-1 bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 rounded-full">
                       Status: {statusFilter}
                     </span>
                   )}
                   {(dateRange.start || dateRange.end) && (
-                    <span className="px-2 py-1 bg-purple-100 text-purple-800 rounded-full">
+                    <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 rounded-full">
                       Date filtered
                     </span>
                   )}
@@ -328,7 +325,7 @@ const Dashboard = ({ session }) => {
                       setStatusFilter('all');
                       setDateRange({ start: null, end: null });
                     }}
-                    className="px-2 py-1 bg-red-100 text-red-800 rounded-full hover:bg-red-200 transition-colors"
+                    className="px-2 py-1 bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-200 rounded-full hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors duration-300"
                   >
                     Clear all
                   </button>

@@ -42,14 +42,14 @@ const TicketTable = ({ tickets, loading, onEdit, onDelete }) => {
     <div className="overflow-x-auto rounded-lg">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-white/20 bg-white/10 backdrop-blur-sm">
-            <th className="text-left py-4 px-4 font-semibold text-gray-700 first:rounded-tl-lg">Ticket ID</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-700">Status</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-700">Work Date</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-700">Notes</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-700">Created</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-700">Updated</th>
-            <th className="text-left py-4 px-4 font-semibold text-gray-700 last:rounded-tr-lg">Actions</th>
+          <tr className="border-b border-white/20 dark:border-gray-700/50 bg-white/10 dark:bg-gray-800/50 backdrop-blur-sm transition-colors duration-300">
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 first:rounded-tl-lg transition-colors duration-300">Ticket ID</th>
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 transition-colors duration-300">Status</th>
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 transition-colors duration-300">Work Date</th>
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 transition-colors duration-300">Notes</th>
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 transition-colors duration-300">Created</th>
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 transition-colors duration-300">Updated</th>
+            <th className="text-left py-4 px-4 font-semibold text-gray-700 dark:text-gray-300 last:rounded-tr-lg transition-colors duration-300">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -61,10 +61,10 @@ const TicketTable = ({ tickets, loading, onEdit, onDelete }) => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="border-b border-white/10 hover:bg-white/10 transition-all duration-200 group"
+                className="border-b border-white/10 dark:border-gray-700/30 hover:bg-white/10 dark:hover:bg-gray-800/50 transition-all duration-200 group"
               >
                 <td className="py-4 px-4">
-                  <span className="font-medium text-gray-800 group-hover:text-primary-600 transition-colors">
+                  <span className="font-medium text-gray-800 dark:text-gray-200 group-hover:text-primary-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                     {ticket.ticket_id}
                   </span>
                 </td>
@@ -74,7 +74,7 @@ const TicketTable = ({ tickets, loading, onEdit, onDelete }) => {
                   </span>
                 </td>
                 <td className="py-4 px-4">
-                  <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 transition-colors duration-300">
                     <Calendar size={16} />
                     <span className="text-sm font-medium">
                       {ticket.work_date ? format(new Date(ticket.work_date), 'MMM dd, yyyy') : format(new Date(ticket.created_at), 'MMM dd, yyyy')}
@@ -82,12 +82,12 @@ const TicketTable = ({ tickets, loading, onEdit, onDelete }) => {
                   </div>
                 </td>
                 <td className="py-4 px-4">
-                  <span className="text-gray-600 max-w-xs truncate block">
+                  <span className="text-gray-600 dark:text-gray-400 max-w-xs truncate block transition-colors duration-300">
                     {ticket.notes || 'No notes'}
                   </span>
                 </td>
                 <td className="py-4 px-4">
-                  <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 transition-colors duration-300">
                     <Calendar size={16} />
                     <span className="text-sm">
                       {format(new Date(ticket.created_at), 'MMM dd, yyyy')}
@@ -95,7 +95,7 @@ const TicketTable = ({ tickets, loading, onEdit, onDelete }) => {
                   </div>
                 </td>
                 <td className="py-4 px-4">
-                  <div className="flex items-center gap-2 text-gray-600">
+                  <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400 transition-colors duration-300">
                     <Calendar size={16} />
                     <span className="text-sm">
                       {format(new Date(ticket.updated_at), 'MMM dd, yyyy')}
@@ -116,7 +116,7 @@ const TicketTable = ({ tickets, loading, onEdit, onDelete }) => {
                       variant="ghost"
                       size="small"
                       onClick={() => onDelete(ticket.id)}
-                      className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="p-2 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors duration-300"
                     >
                       <Trash2 size={16} />
                     </Button>

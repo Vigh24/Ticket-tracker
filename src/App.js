@@ -5,6 +5,7 @@ import AuthForm from './components/Auth/AuthForm';
 import Dashboard from './components/Dashboard/Dashboard';
 import LoadingSpinner from './components/UI/LoadingSpinner';
 import SetupGuide from './components/Setup/SetupGuide';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 function App() {
   const [session, setSession] = useState(null);
@@ -47,27 +48,30 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen">
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            borderRadius: '12px',
-            color: '#374151',
-          },
-        }}
-      />
+    <ThemeProvider>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            className: 'dark:bg-gray-800/90 dark:text-gray-200 dark:border-gray-700/50',
+            style: {
+              background: 'rgba(255, 255, 255, 0.9)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '12px',
+              color: '#374151',
+            },
+          }}
+        />
 
-      {!session ? (
-        <AuthForm />
-      ) : (
-        <Dashboard session={session} />
-      )}
-    </div>
+        {!session ? (
+          <AuthForm />
+        ) : (
+          <Dashboard session={session} />
+        )}
+      </div>
+    </ThemeProvider>
   );
 }
 

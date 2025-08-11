@@ -67,11 +67,12 @@ const CustomSelect = ({
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
         className={`
-          w-full px-3 py-2 bg-white/50 border border-white/30 rounded-lg 
-          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent 
-          backdrop-blur-sm transition-all duration-200 text-left flex items-center justify-between
-          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/60 cursor-pointer'}
-          ${isOpen ? 'ring-2 ring-primary-500 bg-white/70' : ''}
+          w-full px-3 py-2 bg-white/50 dark:bg-gray-800/50 border border-white/30 dark:border-gray-700/50 rounded-lg
+          focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-blue-500 focus:border-transparent
+          backdrop-blur-sm transition-all duration-300 text-left flex items-center justify-between
+          text-gray-700 dark:text-gray-300
+          ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/60 dark:hover:bg-gray-700/50 cursor-pointer'}
+          ${isOpen ? 'ring-2 ring-primary-500 dark:ring-blue-500 bg-white/70 dark:bg-gray-700/50' : ''}
         `}
       >
         <span className="flex items-center gap-2">
@@ -86,12 +87,12 @@ const CustomSelect = ({
               )}
             </>
           ) : (
-            <span className="text-gray-500">{placeholder}</span>
+            <span className="text-gray-500 dark:text-gray-400">{placeholder}</span>
           )}
         </span>
-        <ChevronDown 
-          size={16} 
-          className={`text-gray-400 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+        <ChevronDown
+          size={16}
+          className={`text-gray-400 dark:text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
 
@@ -105,7 +106,7 @@ const CustomSelect = ({
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="absolute top-full left-0 right-0 mt-1 z-50"
           >
-            <div className="bg-white/90 backdrop-blur-md border border-white/30 rounded-lg shadow-xl overflow-hidden"
+            <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-white/30 dark:border-gray-700/50 rounded-lg shadow-xl dark:shadow-gray-900/20 overflow-hidden transition-colors duration-300"
                  style={{
                    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
                  }}>
@@ -118,17 +119,21 @@ const CustomSelect = ({
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className={`
-                    w-full px-3 py-2.5 text-left hover:bg-white/50 transition-all duration-150
+                    w-full px-3 py-2.5 text-left hover:bg-white/50 dark:hover:bg-gray-700/50 transition-all duration-150
                     flex items-center justify-between group
-                    ${value === option.value ? 'bg-primary-50 text-primary-700' : 'text-gray-700'}
-                    ${index !== options.length - 1 ? 'border-b border-white/20' : ''}
+                    ${value === option.value
+                      ? 'bg-primary-50 dark:bg-blue-900/30 text-primary-700 dark:text-blue-300'
+                      : 'text-gray-700 dark:text-gray-300'}
+                    ${index !== options.length - 1 ? 'border-b border-white/20 dark:border-gray-700/30' : ''}
                   `}
                 >
                   <span className="flex items-center gap-2">
                     {option.icon && (
-                      <option.icon 
-                        size={16} 
-                        className={value === option.value ? 'text-primary-600' : 'text-gray-500'}
+                      <option.icon
+                        size={16}
+                        className={value === option.value
+                          ? 'text-primary-600 dark:text-blue-400'
+                          : 'text-gray-500 dark:text-gray-400'}
                       />
                     )}
                     <span className="font-medium">{option.label}</span>
@@ -139,7 +144,7 @@ const CustomSelect = ({
                     )}
                   </span>
                   {value === option.value && (
-                    <Check size={16} className="text-primary-600" />
+                    <Check size={16} className="text-primary-600 dark:text-blue-400" />
                   )}
                 </motion.button>
               ))}
