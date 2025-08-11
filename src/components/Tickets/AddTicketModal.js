@@ -5,13 +5,15 @@ import Modal from '../UI/Modal';
 import Button from '../UI/Button';
 import CustomSelect from '../UI/CustomSelect';
 import toast from 'react-hot-toast';
+import { format } from 'date-fns';
 
-const AddTicketModal = ({ isOpen, onClose, onSuccess }) => {
+const AddTicketModal = ({ isOpen, onClose, onSuccess, workDate = new Date() }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     ticketId: '',
     status: TICKET_STATUS.AWAITING_RESPONSE,
-    notes: ''
+    notes: '',
+    workDate: workDate
   });
 
   const statusOptions = [
@@ -41,42 +43,31 @@ const AddTicketModal = ({ isOpen, onClose, onSuccess }) => {
     setLoading(true);
 
     try {
-      // Check if ticket already exists
+      const currentWorkDate = format(formData.workDate, 'yyyy-MM-dd');
+
+      // Check if ticket already exists for this specific work date
       const { data: existingTicket } = await supabase
         .from('tickets')
         .select('*')
         .eq('ticket_id', formData.ticketId)
+        .eq('work_date', currentWorkDate)
         .single();
 
       if (existingTicket) {
-        // If ticket exists with same status, just update it
-        if (existingTicket.status === formData.status) {
-          const { error } = await supabase
-            .from('tickets')
-            .update({
-              notes: formData.notes,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', existingTicket.id);
+        // If ticket exists for this date, update it
+        const { error } = await supabase
+          .from('tickets')
+          .update({
+            status: formData.status,
+            notes: formData.notes,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', existingTicket.id);
 
-          if (error) throw error;
-          toast.success('Ticket updated successfully');
-        } else {
-          // If status is different, update the status
-          const { error } = await supabase
-            .from('tickets')
-            .update({
-              status: formData.status,
-              notes: formData.notes,
-              updated_at: new Date().toISOString()
-            })
-            .eq('id', existingTicket.id);
-
-          if (error) throw error;
-          toast.success('Ticket status updated successfully');
-        }
+        if (error) throw error;
+        toast.success(`Ticket updated for ${format(formData.workDate, 'MMM dd, yyyy')}`);
       } else {
-        // Create new ticket
+        // Create new ticket entry for this work date
         const { error } = await supabase
           .from('tickets')
           .insert([
@@ -84,18 +75,20 @@ const AddTicketModal = ({ isOpen, onClose, onSuccess }) => {
               ticket_id: formData.ticketId,
               status: formData.status,
               notes: formData.notes,
+              work_date: currentWorkDate,
               user_id: (await supabase.auth.getUser()).data.user.id
             }
           ]);
 
         if (error) throw error;
-        toast.success('Ticket created successfully');
+        toast.success(`Ticket created for ${format(formData.workDate, 'MMM dd, yyyy')}`);
       }
 
       setFormData({
         ticketId: '',
         status: TICKET_STATUS.AWAITING_RESPONSE,
-        notes: ''
+        notes: '',
+        workDate: workDate
       });
       onSuccess();
     } catch (error) {
@@ -109,7 +102,8 @@ const AddTicketModal = ({ isOpen, onClose, onSuccess }) => {
     setFormData({
       ticketId: '',
       status: TICKET_STATUS.AWAITING_RESPONSE,
-      notes: ''
+      notes: '',
+      workDate: workDate
     });
     onClose();
   };
@@ -135,6 +129,22 @@ const AddTicketModal = ({ isOpen, onClose, onSuccess }) => {
             className="input-field"
             required
           />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Work Date *
+          </label>
+          <input
+            type="date"
+            value={format(formData.workDate, 'yyyy-MM-dd')}
+            onChange={(e) => setFormData({ ...formData, workDate: new Date(e.target.value) })}
+            className="input-field"
+            required
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Same ticket ID can be added for different dates
+          </p>
         </div>
 
         <div>

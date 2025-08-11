@@ -23,7 +23,7 @@ import ExportModal from '../Export/ExportModal';
 import DateFilter from '../UI/DateFilter';
 import CustomSelect from '../UI/CustomSelect';
 import toast from 'react-hot-toast';
-import { isWithinInterval } from 'date-fns';
+import { isWithinInterval, format, startOfDay, endOfDay } from 'date-fns';
 
 const Dashboard = ({ session }) => {
   const [tickets, setTickets] = useState([]);
@@ -33,6 +33,8 @@ const Dashboard = ({ session }) => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateRange, setDateRange] = useState({ start: null, end: null });
   const [showDateFilter, setShowDateFilter] = useState(false);
+  const [workDate, setWorkDate] = useState(new Date());
+  const [viewMode, setViewMode] = useState('today'); // 'today', 'date-range', 'all-time'
   const [showAddTicket, setShowAddTicket] = useState(false);
   const [showEditTicket, setShowEditTicket] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
@@ -48,14 +50,31 @@ const Dashboard = ({ session }) => {
   useEffect(() => {
     fetchTickets();
     fetchNotes();
-  }, []);
+  }, [viewMode, workDate, dateRange]);
 
   const fetchTickets = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('tickets')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
+
+      // Apply date filtering based on view mode
+      if (viewMode === 'today') {
+        const todayStart = format(startOfDay(workDate), 'yyyy-MM-dd');
+        const todayEnd = format(endOfDay(workDate), 'yyyy-MM-dd');
+        query = query
+          .gte('work_date', todayStart)
+          .lte('work_date', todayEnd);
+      } else if (viewMode === 'date-range' && dateRange.start && dateRange.end) {
+        const startDate = format(startOfDay(dateRange.start), 'yyyy-MM-dd');
+        const endDate = format(endOfDay(dateRange.end), 'yyyy-MM-dd');
+        query = query
+          .gte('work_date', startDate)
+          .lte('work_date', endDate);
+      }
+      // For 'all-time' mode, no date filtering is applied
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) throw error;
       setTickets(data || []);
@@ -188,6 +207,77 @@ const Dashboard = ({ session }) => {
               </div>
             </div>
 
+            {/* View Mode Controls */}
+            <div className="mb-6 p-4 bg-white/30 backdrop-blur-sm border border-white/30 rounded-lg">
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setViewMode('today')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      viewMode === 'today'
+                        ? 'bg-blue-500 text-white shadow-lg'
+                        : 'bg-white/50 text-gray-700 hover:bg-white/70'
+                    }`}
+                  >
+                    Today
+                  </button>
+                  <button
+                    onClick={() => setViewMode('date-range')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      viewMode === 'date-range'
+                        ? 'bg-blue-500 text-white shadow-lg'
+                        : 'bg-white/50 text-gray-700 hover:bg-white/70'
+                    }`}
+                  >
+                    Date Range
+                  </button>
+                  <button
+                    onClick={() => setViewMode('all-time')}
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      viewMode === 'all-time'
+                        ? 'bg-blue-500 text-white shadow-lg'
+                        : 'bg-white/50 text-gray-700 hover:bg-white/70'
+                    }`}
+                  >
+                    All Time
+                  </button>
+                </div>
+
+                {viewMode === 'today' && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-sm font-medium text-gray-700">Work Date:</label>
+                    <input
+                      type="date"
+                      value={format(workDate, 'yyyy-MM-dd')}
+                      onChange={(e) => setWorkDate(new Date(e.target.value))}
+                      className="px-3 py-1 border border-gray-300 rounded-lg text-sm"
+                    />
+                  </div>
+                )}
+
+                {viewMode === 'date-range' && (
+                  <div className="flex items-center gap-2">
+                    <DateFilter
+                      dateRange={dateRange}
+                      onDateRangeChange={setDateRange}
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-3 text-sm text-gray-600">
+                {viewMode === 'today' && (
+                  <span>Showing tickets for {format(workDate, 'MMMM dd, yyyy')} • Same ticket IDs can appear on different dates</span>
+                )}
+                {viewMode === 'date-range' && dateRange.start && dateRange.end && (
+                  <span>Showing tickets from {format(dateRange.start, 'MMM dd')} to {format(dateRange.end, 'MMM dd, yyyy')}</span>
+                )}
+                {viewMode === 'all-time' && (
+                  <span>Showing all tickets across all dates</span>
+                )}
+              </div>
+            </div>
+
             {/* Search and Filter */}
             <div className="space-y-4 mb-6">
               <div className="flex flex-col sm:flex-row gap-4">
@@ -211,34 +301,7 @@ const Dashboard = ({ session }) => {
                   />
                 </div>
 
-                <Button
-                  variant="secondary"
-                  onClick={() => setShowDateFilter(!showDateFilter)}
-                  className="flex items-center gap-2 whitespace-nowrap"
-                >
-                  <Calendar size={20} />
-                  Date Filter
-                  <ChevronDown
-                    size={16}
-                    className={`transform transition-transform ${showDateFilter ? 'rotate-180' : ''}`}
-                  />
-                </Button>
               </div>
-
-              {/* Date Filter Panel */}
-              {showDateFilter && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="bg-white/30 backdrop-blur-sm border border-white/30 rounded-lg p-4"
-                >
-                  <DateFilter
-                    dateRange={dateRange}
-                    onDateRangeChange={setDateRange}
-                  />
-                </motion.div>
-              )}
 
               {/* Active Filters Display */}
               {(searchTerm || statusFilter !== 'all' || dateRange.start || dateRange.end) && (
@@ -291,6 +354,7 @@ const Dashboard = ({ session }) => {
           fetchTickets();
           setShowAddTicket(false);
         }}
+        workDate={workDate}
       />
 
       <EditTicketModal

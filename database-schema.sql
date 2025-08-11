@@ -23,7 +23,9 @@ CREATE TABLE IF NOT EXISTS tickets (
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  UNIQUE(ticket_id, user_id)
+  work_date DATE DEFAULT CURRENT_DATE,
+  -- Allow same ticket_id for different dates, but unique per user per day
+  UNIQUE(ticket_id, user_id, work_date)
 );
 
 -- Create notes table
