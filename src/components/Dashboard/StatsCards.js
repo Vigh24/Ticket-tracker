@@ -86,12 +86,7 @@ const StatsCards = ({ tickets, allTickets, dateRange }) => {
             scale: 1.02,
             transition: { duration: 0.2 }
           }}
-          className="card dark:bg-gray-800/50 dark:border-gray-700/50 hover:shadow-2xl dark:hover:shadow-gray-900/30 transition-all duration-300 relative overflow-hidden group"
-          style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255, 255, 255, 0.3)'
-          }}
+          className="card hover:shadow-2xl dark:hover:shadow-gray-900/30 transition-all duration-300 relative overflow-hidden group"
         >
           {/* Card shine effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>

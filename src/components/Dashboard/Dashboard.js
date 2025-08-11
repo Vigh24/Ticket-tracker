@@ -219,15 +219,10 @@ const Dashboard = ({ session }) => {
           />
 
           <motion.div
-            className="mt-8 card dark:bg-gray-800/50 dark:border-gray-700/50 transition-colors duration-300 relative overflow-hidden"
+            className="mt-8 card transition-colors duration-300 relative overflow-hidden"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            style={{
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)'
-            }}
           >
             {/* Card shine effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
