@@ -43,8 +43,12 @@ pids
 Thumbs.db
 ehthumbs.db
 
-# Environment variables (keep .env.example)
+# Environment variables (keep .env.example and .env.production)
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Ignore nested git repositories
 tickettrack-pro/
