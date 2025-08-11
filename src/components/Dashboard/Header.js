@@ -15,11 +15,11 @@ const Header = ({ user, onSignOut, onShowNotes }) => {
         onClose={() => setShowGame(false)}
       />
       <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="glass border-b border-white/20 dark:border-gray-700/50 sticky top-0 z-40 backdrop-blur-xl bg-white/10 dark:bg-gray-900/50 transition-colors duration-300"
-    >
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="glass border-b border-white/20 dark:border-gray-700/50 sticky top-0 z-40 backdrop-blur-xl bg-white/10 dark:bg-gray-900/50 transition-colors duration-300"
+      >
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">

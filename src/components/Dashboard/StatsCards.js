@@ -73,33 +73,103 @@ const StatsCards = ({ tickets, allTickets, dateRange }) => {
       {stats.map((stat, index) => (
         <motion.div
           key={stat.title}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-          className="card dark:bg-gray-800/50 dark:border-gray-700/50 hover:shadow-xl dark:hover:shadow-gray-900/20 transition-all duration-300"
+          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{
+            duration: 0.6,
+            delay: index * 0.1,
+            type: "spring",
+            bounce: 0.3
+          }}
+          whileHover={{
+            y: -8,
+            scale: 1.02,
+            transition: { duration: 0.2 }
+          }}
+          className="card dark:bg-gray-800/50 dark:border-gray-700/50 hover:shadow-2xl dark:hover:shadow-gray-900/30 transition-all duration-300 relative overflow-hidden group"
+          style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)'
+          }}
         >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1 transition-colors duration-300">
-                {stat.title}
-              </p>
+          {/* Card shine effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+
+          <div className="flex items-center justify-between relative z-10">
+            <div className="flex-1">
               <motion.p
-                initial={{ scale: 0.5 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.3 + index * 0.1, type: 'spring' }}
-                className="text-3xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300"
+                className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2 transition-colors duration-300 uppercase tracking-wide"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 + index * 0.1 }}
               >
-                {stat.value}
+                {stat.title}
               </motion.p>
+
+              <motion.div
+                initial={{ scale: 0.5, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{
+                  delay: 0.3 + index * 0.1,
+                  type: 'spring',
+                  bounce: 0.4
+                }}
+                className="relative"
+              >
+                <motion.p
+                  className="text-4xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300"
+                  animate={{
+                    scale: stat.value !== 0 ? [1, 1.05, 1] : 1
+                  }}
+                  transition={{
+                    duration: 0.3,
+                    repeat: stat.value !== 0 ? 1 : 0
+                  }}
+                >
+                  {stat.value}
+                </motion.p>
+
+                {/* Animated underline for active stats */}
+                {stat.value !== 0 && (
+                  <motion.div
+                    className="absolute -bottom-1 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ delay: 0.5 + index * 0.1, duration: 0.8 }}
+                  />
+                )}
+              </motion.div>
+
               {stat.subtitle && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors duration-300">
+                <motion.p
+                  className="text-xs text-gray-500 dark:text-gray-400 mt-2 transition-colors duration-300 font-medium"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                >
                   {stat.subtitle}
-                </p>
+                </motion.p>
               )}
             </div>
-            <div className={`p-3 rounded-full ${stat.bgColor} transition-colors duration-300`}>
-              <stat.icon className={`w-6 h-6 ${stat.color} transition-colors duration-300`} />
-            </div>
+
+            <motion.div
+              className={`p-4 rounded-2xl ${stat.bgColor} transition-all duration-300 shadow-lg group-hover:shadow-xl`}
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{
+                delay: 0.5 + index * 0.1,
+                type: "spring",
+                bounce: 0.5
+              }}
+              whileHover={{
+                scale: 1.1,
+                rotate: 5,
+                transition: { duration: 0.2 }
+              }}
+            >
+              <stat.icon className={`w-8 h-8 ${stat.color} transition-colors duration-300`} />
+            </motion.div>
           </div>
         </motion.div>
       ))}

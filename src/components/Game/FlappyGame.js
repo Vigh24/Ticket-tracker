@@ -30,6 +30,9 @@ const FlappyGame = ({ isOpen, onClose }) => {
     // Game state
     let bird, pipes, frames, running, gameOver, currentScore;
     let gravity, flapPower, pipeGap, speed, pipeSpace;
+    let particles = [];
+    let clouds = [];
+    let stars = [];
 
     // Difficulty presets
     const DIFF = {
@@ -39,7 +42,55 @@ const FlappyGame = ({ isOpen, onClose }) => {
     };
 
     function createBird() {
-      return { x: W * 0.28, y: H / 2, vy: 0, radius: 16, wing: 0 };
+      return {
+        x: W * 0.28,
+        y: H / 2,
+        vy: 0,
+        radius: 16,
+        wing: 0,
+        rotation: 0,
+        trail: []
+      };
+    }
+
+    // Particle system
+    function createParticle(x, y, type = 'flap') {
+      const colors = {
+        flap: ['#ffeb3b', '#ffc107', '#ff9800'],
+        score: ['#4caf50', '#8bc34a', '#cddc39'],
+        explosion: ['#f44336', '#ff5722', '#ff9800']
+      };
+
+      return {
+        x, y,
+        vx: (Math.random() - 0.5) * 4,
+        vy: (Math.random() - 0.5) * 4,
+        life: 1.0,
+        decay: 0.02 + Math.random() * 0.02,
+        size: 2 + Math.random() * 3,
+        color: colors[type][Math.floor(Math.random() * colors[type].length)],
+        type
+      };
+    }
+
+    function createCloud() {
+      return {
+        x: W + 50,
+        y: 50 + Math.random() * 100,
+        size: 20 + Math.random() * 30,
+        speed: 0.3 + Math.random() * 0.5,
+        opacity: 0.3 + Math.random() * 0.4
+      };
+    }
+
+    function createStar() {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H * 0.6,
+        size: 1 + Math.random() * 2,
+        twinkle: Math.random() * Math.PI * 2,
+        speed: 0.01 + Math.random() * 0.02
+      };
     }
 
     function setGameDifficulty(name) {
@@ -54,11 +105,28 @@ const FlappyGame = ({ isOpen, onClose }) => {
     function reset() {
       bird = createBird();
       pipes = [];
+      particles = [];
       frames = 0;
       running = false;
       gameOver = false;
       currentScore = 0;
       setScore(0);
+
+      // Initialize background elements
+      clouds = [];
+      for (let i = 0; i < 3; i++) {
+        clouds.push({
+          ...createCloud(),
+          x: Math.random() * W
+        });
+      }
+
+      if (isDarkMode) {
+        stars = [];
+        for (let i = 0; i < 20; i++) {
+          stars.push(createStar());
+        }
+      }
     }
 
     function spawnPipe() {
@@ -97,6 +165,13 @@ const FlappyGame = ({ isOpen, onClose }) => {
       }
       bird.vy = flapPower;
       bird.wing = 6;
+      bird.rotation = -0.3;
+
+      // Add flap particles
+      for (let i = 0; i < 5; i++) {
+        particles.push(createParticle(bird.x - 10, bird.y + 5, 'flap'));
+      }
+
       beep(880, 0.04);
       running = true;
       setShowMenu(false);
@@ -124,112 +199,308 @@ const FlappyGame = ({ isOpen, onClose }) => {
 
     // Drawing functions
     function drawBackground() {
+      // Sky gradient
       const grad = ctx.createLinearGradient(0, 0, 0, H);
       if (isDarkMode) {
-        grad.addColorStop(0, '#374151');
-        grad.addColorStop(1, '#1f2937');
+        grad.addColorStop(0, '#1e293b');
+        grad.addColorStop(0.5, '#334155');
+        grad.addColorStop(1, '#475569');
       } else {
-        grad.addColorStop(0, '#9be6ef');
+        grad.addColorStop(0, '#87ceeb');
+        grad.addColorStop(0.3, '#9be6ef');
         grad.addColorStop(1, '#70c5ce');
       }
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, W, H);
-      
-      // Ground
-      ctx.fillStyle = isDarkMode ? '#4b5563' : '#ded895';
+
+      // Draw stars in dark mode
+      if (isDarkMode) {
+        ctx.fillStyle = '#fbbf24';
+        for (const star of stars) {
+          const alpha = 0.5 + 0.5 * Math.sin(star.twinkle);
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+          ctx.fill();
+          star.twinkle += star.speed;
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // Draw clouds
+      ctx.fillStyle = isDarkMode ? 'rgba(148, 163, 184, 0.3)' : 'rgba(255, 255, 255, 0.6)';
+      for (const cloud of clouds) {
+        ctx.globalAlpha = cloud.opacity;
+        ctx.beginPath();
+        ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
+        ctx.arc(cloud.x + cloud.size * 0.5, cloud.y, cloud.size * 0.8, 0, Math.PI * 2);
+        ctx.arc(cloud.x - cloud.size * 0.5, cloud.y, cloud.size * 0.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // Enhanced ground with texture
+      const groundGrad = ctx.createLinearGradient(0, H - 80, 0, H);
+      if (isDarkMode) {
+        groundGrad.addColorStop(0, '#4b5563');
+        groundGrad.addColorStop(1, '#374151');
+      } else {
+        groundGrad.addColorStop(0, '#ded895');
+        groundGrad.addColorStop(1, '#c4b56a');
+      }
+      ctx.fillStyle = groundGrad;
       ctx.fillRect(0, H - 80, W, 80);
+
+      // Ground texture
+      ctx.strokeStyle = isDarkMode ? '#6b7280' : '#b8a65c';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < W; i += 20) {
+        ctx.beginPath();
+        ctx.moveTo(i, H - 80);
+        ctx.lineTo(i, H);
+        ctx.stroke();
+      }
     }
 
     function drawPipes() {
-      ctx.fillStyle = isDarkMode ? '#059669' : '#2d8c3e';
       for (const p of pipes) {
         const pw = 56;
-        // Top pipe
+
+        // Pipe shadows
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(p.x + 3, 3, pw, p.top);
+        ctx.fillRect(p.x + 3, p.top + pipeGap + 3, pw, H - (p.top + pipeGap) - 80);
+
+        // Pipe gradient
+        const pipeGrad = ctx.createLinearGradient(p.x, 0, p.x + pw, 0);
+        if (isDarkMode) {
+          pipeGrad.addColorStop(0, '#065f46');
+          pipeGrad.addColorStop(0.5, '#059669');
+          pipeGrad.addColorStop(1, '#047857');
+        } else {
+          pipeGrad.addColorStop(0, '#22543d');
+          pipeGrad.addColorStop(0.5, '#2d8c3e');
+          pipeGrad.addColorStop(1, '#1f6b2b');
+        }
+
+        // Top pipe body
+        ctx.fillStyle = pipeGrad;
         ctx.fillRect(p.x, 0, pw, p.top);
-        // Top cap
-        ctx.fillStyle = isDarkMode ? '#047857' : '#1f6b2b';
+
+        // Top pipe cap with gradient
+        const capGrad = ctx.createLinearGradient(p.x - 2, p.top - 12, p.x + pw + 2, p.top);
+        capGrad.addColorStop(0, isDarkMode ? '#047857' : '#1f6b2b');
+        capGrad.addColorStop(0.5, isDarkMode ? '#065f46' : '#22543d');
+        capGrad.addColorStop(1, isDarkMode ? '#047857' : '#1f6b2b');
+        ctx.fillStyle = capGrad;
         ctx.fillRect(p.x - 2, p.top - 12, pw + 4, 12);
-        // Bottom pipe
-        ctx.fillStyle = isDarkMode ? '#059669' : '#2d8c3e';
+
+        // Bottom pipe body
+        ctx.fillStyle = pipeGrad;
         ctx.fillRect(p.x, p.top + pipeGap, pw, H - (p.top + pipeGap) - 80);
-        // Bottom cap
-        ctx.fillStyle = isDarkMode ? '#047857' : '#1f6b2b';
+
+        // Bottom pipe cap
+        ctx.fillStyle = capGrad;
         ctx.fillRect(p.x - 2, p.top + pipeGap, pw + 4, 12);
-        ctx.fillStyle = isDarkMode ? '#059669' : '#2d8c3e';
+
+        // Pipe highlights
+        ctx.strokeStyle = isDarkMode ? 'rgba(16, 185, 129, 0.3)' : 'rgba(72, 187, 120, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(p.x + 5, 0);
+        ctx.lineTo(p.x + 5, p.top);
+        ctx.moveTo(p.x + 5, p.top + pipeGap);
+        ctx.lineTo(p.x + 5, H - 80);
+        ctx.stroke();
       }
     }
 
     function drawBird() {
       const b = bird;
-      // Shadow
+
+      // Update bird trail
+      b.trail.push({ x: b.x, y: b.y, alpha: 1 });
+      if (b.trail.length > 8) b.trail.shift();
+
+      // Draw trail
+      for (let i = 0; i < b.trail.length; i++) {
+        const trail = b.trail[i];
+        const alpha = (i / b.trail.length) * 0.3;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = isDarkMode ? '#fbbf24' : '#ffcb05';
+        ctx.beginPath();
+        ctx.arc(trail.x, trail.y, b.radius * (0.5 + i / b.trail.length * 0.5), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      // Enhanced shadow with blur effect
+      ctx.save();
+      ctx.filter = 'blur(3px)';
       ctx.beginPath();
-      ctx.ellipse(b.x, b.y + 14, b.radius * 0.9, b.radius * 0.45, 0, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.12)';
+      ctx.ellipse(b.x + 2, b.y + 16, b.radius * 0.9, b.radius * 0.45, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
       ctx.fill();
-      
+      ctx.restore();
+
       ctx.save();
       ctx.translate(b.x, b.y);
-      ctx.rotate(b.vy / 12);
-      
-      // Body
-      ctx.fillStyle = isDarkMode ? '#fbbf24' : '#ffcb05';
+
+      // Smooth rotation based on velocity
+      b.rotation = Math.max(-0.5, Math.min(0.5, b.vy / 15));
+      ctx.rotate(b.rotation);
+
+      // Body with gradient
+      const bodyGrad = ctx.createRadialGradient(-5, -5, 0, 0, 0, b.radius + 4);
+      if (isDarkMode) {
+        bodyGrad.addColorStop(0, '#fde047');
+        bodyGrad.addColorStop(1, '#eab308');
+      } else {
+        bodyGrad.addColorStop(0, '#fef08a');
+        bodyGrad.addColorStop(1, '#f59e0b');
+      }
+      ctx.fillStyle = bodyGrad;
       ctx.beginPath();
       ctx.ellipse(0, 0, b.radius + 4, b.radius, 0, 0, Math.PI * 2);
       ctx.fill();
-      
-      // Eye
-      ctx.fillStyle = '#222';
+
+      // Body outline
+      ctx.strokeStyle = isDarkMode ? '#ca8a04' : '#d97706';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Eye with highlight
+      ctx.fillStyle = '#1f2937';
       ctx.beginPath();
-      ctx.arc(6, -4, 3, 0, Math.PI * 2);
+      ctx.arc(6, -4, 4, 0, Math.PI * 2);
       ctx.fill();
-      
-      // Beak
-      ctx.fillStyle = '#ff8a00';
+
+      // Eye highlight
+      ctx.fillStyle = '#f3f4f6';
+      ctx.beginPath();
+      ctx.arc(7, -5, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Enhanced beak with gradient
+      const beakGrad = ctx.createLinearGradient(b.radius, -2, b.radius + 12, 6);
+      beakGrad.addColorStop(0, '#fb923c');
+      beakGrad.addColorStop(1, '#ea580c');
+      ctx.fillStyle = beakGrad;
       ctx.beginPath();
       ctx.moveTo(b.radius + 2, 0);
       ctx.lineTo(b.radius + 12, 4);
       ctx.lineTo(b.radius + 2, 7);
       ctx.closePath();
       ctx.fill();
-      
-      // Wing
-      ctx.fillStyle = isDarkMode ? '#d97706' : '#e6a700';
+
+      // Wing with animation
+      const wingGrad = ctx.createRadialGradient(-2, 0, 0, -2, 0, 12);
+      if (isDarkMode) {
+        wingGrad.addColorStop(0, '#f59e0b');
+        wingGrad.addColorStop(1, '#d97706');
+      } else {
+        wingGrad.addColorStop(0, '#fbbf24');
+        wingGrad.addColorStop(1, '#f59e0b');
+      }
+      ctx.fillStyle = wingGrad;
       ctx.beginPath();
-      const wingY = Math.sin(b.wing / 3 || 0) * 6;
-      ctx.ellipse(-2, wingY, 12, 6, Math.PI / 6, 0, Math.PI * 2);
+      const wingY = Math.sin((b.wing || 0) / 3) * 8;
+      const wingRotation = Math.sin((b.wing || 0) / 2) * 0.3;
+      ctx.save();
+      ctx.rotate(wingRotation);
+      ctx.ellipse(-2, wingY, 14, 8, Math.PI / 6, 0, Math.PI * 2);
       ctx.fill();
-      
       ctx.restore();
+
+      ctx.restore();
+    }
+
+    function drawParticles() {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+
+        ctx.save();
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Add glow effect for score particles
+        if (p.type === 'score') {
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 10;
+          ctx.fill();
+        }
+
+        ctx.restore();
+
+        // Update particle
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
+        p.vy += 0.1; // gravity
+
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+    }
+
+    function updateBackground() {
+      // Update clouds
+      for (const cloud of clouds) {
+        cloud.x -= cloud.speed;
+        if (cloud.x + cloud.size < 0) {
+          cloud.x = W + cloud.size;
+          cloud.y = 50 + Math.random() * 100;
+        }
+      }
     }
 
     function drawGameOver() {
       ctx.save();
-      ctx.fillStyle = 'rgba(0,0,0,0.7)';
+
+      // Animated background overlay
+      const overlayAlpha = 0.7 + 0.1 * Math.sin(frames * 0.05);
+      ctx.fillStyle = `rgba(0,0,0,${overlayAlpha})`;
       ctx.fillRect(0, 0, W, H);
-      
+
+      // Game over text with glow
+      ctx.shadowColor = isDarkMode ? '#3b82f6' : '#1d4ed8';
+      ctx.shadowBlur = 20;
       ctx.fillStyle = isDarkMode ? '#f3f4f6' : '#fff';
       ctx.textAlign = 'center';
-      ctx.font = '36px system-ui, Arial';
+      ctx.font = 'bold 36px system-ui, Arial';
       ctx.fillText('Game Over', W / 2, H * 0.44);
-      
+
+      ctx.shadowBlur = 10;
       ctx.font = '18px system-ui, Arial';
       ctx.fillText(`Score: ${currentScore}  High: ${highScore}`, W / 2, H * 0.52);
-      
+
+      ctx.shadowBlur = 5;
       ctx.font = '14px system-ui, Arial';
       ctx.fillText('Click or press Space to restart', W / 2, H * 0.6);
-      
+
       ctx.restore();
     }
 
     function update() {
       frames++;
-      
+
+      // Update background elements
+      updateBackground();
+
       // Ground collision
       if (bird.y + bird.radius > H - 80) {
         bird.y = H - 80 - bird.radius;
+        // Add explosion particles
+        for (let i = 0; i < 10; i++) {
+          particles.push(createParticle(bird.x, bird.y, 'explosion'));
+        }
         endGame();
       }
-      
+
       if (!running) return;
 
       // Spawn pipes
@@ -241,25 +512,35 @@ const FlappyGame = ({ isOpen, onClose }) => {
       for (let i = pipes.length - 1; i >= 0; i--) {
         const p = pipes[i];
         p.x -= speed;
-        
+
         if (!p.passed && p.x + 56 < bird.x) {
           p.passed = true;
           currentScore++;
           setScore(currentScore);
+
+          // Add score particles
+          for (let j = 0; j < 8; j++) {
+            particles.push(createParticle(bird.x, bird.y, 'score'));
+          }
+
           beep(600, 0.04);
-          
+
           if (currentScore > highScore) {
             const newHigh = currentScore;
             setHighScore(newHigh);
             localStorage.setItem('tickettrack-flappy-high', newHigh.toString());
           }
         }
-        
+
         if (p.x < -100) {
           pipes.splice(i, 1);
         }
-        
+
         if (collides(p)) {
+          // Add collision particles
+          for (let j = 0; j < 15; j++) {
+            particles.push(createParticle(bird.x, bird.y, 'explosion'));
+          }
           endGame();
         }
       }
@@ -268,6 +549,9 @@ const FlappyGame = ({ isOpen, onClose }) => {
       bird.vy += gravity;
       bird.y += bird.vy;
       bird.wing = Math.max(0, bird.wing - 0.6);
+
+      // Smooth rotation decay
+      bird.rotation *= 0.95;
     }
 
     function endGame() {
@@ -282,8 +566,9 @@ const FlappyGame = ({ isOpen, onClose }) => {
       ctx.clearRect(0, 0, W, H);
       drawBackground();
       drawPipes();
+      drawParticles();
       drawBird();
-      
+
       if (gameOver) {
         drawGameOver();
       }
@@ -371,96 +656,168 @@ const FlappyGame = ({ isOpen, onClose }) => {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="relative w-full max-w-lg bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border border-white/30 dark:border-gray-700/50 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-lg bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl border border-white/40 dark:border-gray-700/60 rounded-3xl shadow-2xl dark:shadow-gray-900/50 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
+        style={{
+          background: isDarkMode
+            ? 'linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(55, 65, 81, 0.95) 100%)'
+            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)'
+        }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/20 dark:border-gray-700/50">
-          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-200">
-            🎮 Flappy Easter Egg
-          </h2>
-          <button
+        <div className="flex items-center justify-between p-6 border-b border-white/30 dark:border-gray-700/50 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
+          <div className="flex items-center gap-3">
+            <motion.div
+              animate={{ rotate: [0, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="text-2xl"
+            >
+              🎮
+            </motion.div>
+            <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+              Flappy Easter Egg
+            </h2>
+          </div>
+          <motion.button
             onClick={onClose}
-            className="p-2 hover:bg-white/20 dark:hover:bg-gray-700/50 rounded-lg transition-colors"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="p-2 hover:bg-white/20 dark:hover:bg-gray-700/50 rounded-xl transition-all duration-200 group"
           >
-            <X size={20} className="text-gray-600 dark:text-gray-400" />
-          </button>
+            <X size={20} className="text-gray-600 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors" />
+          </motion.button>
         </div>
 
         {/* Game Canvas */}
-        <div className="p-4">
+        <div className="p-6">
           <div className="relative">
             <canvas
               ref={canvasRef}
               width={480}
               height={400}
-              className="w-full h-auto border border-white/30 dark:border-gray-700/50 rounded-lg shadow-lg"
+              className="w-full h-auto border-2 border-white/40 dark:border-gray-700/60 rounded-2xl shadow-xl dark:shadow-gray-900/30"
+              style={{
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%)'
+              }}
             />
-            
+
             {/* Game Menu Overlay */}
             {showMenu && (
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="absolute inset-0 flex items-center justify-center bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-lg"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="absolute inset-0 flex items-center justify-center bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl"
               >
-                <div className="text-center p-6">
-                  <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
-                    Choose Difficulty
-                  </h3>
-                  <div className="flex gap-3 justify-center mb-4">
-                    <button
+                <div className="text-center p-8">
+                  <motion.div
+                    initial={{ y: -20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1 }}
+                  >
+                    <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent mb-6">
+                      Choose Your Challenge
+                    </h3>
+                  </motion.div>
+
+                  <motion.div
+                    className="flex gap-4 justify-center mb-6"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <motion.button
                       onClick={() => handleDifficultySelect('easy')}
-                      className="px-4 py-2 bg-green-200 dark:bg-green-900/50 text-green-800 dark:text-green-200 rounded-lg hover:bg-green-300 dark:hover:bg-green-800/50 transition-colors"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-3 bg-gradient-to-r from-green-400 to-green-500 dark:from-green-500 dark:to-green-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      Easy
-                    </button>
-                    <button
+                      🟢 Easy
+                    </motion.button>
+                    <motion.button
                       onClick={() => handleDifficultySelect('medium')}
-                      className="px-4 py-2 bg-yellow-200 dark:bg-yellow-900/50 text-yellow-800 dark:text-yellow-200 rounded-lg hover:bg-yellow-300 dark:hover:bg-yellow-800/50 transition-colors"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 dark:from-yellow-500 dark:to-orange-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      Medium
-                    </button>
-                    <button
+                      🟡 Medium
+                    </motion.button>
+                    <motion.button
                       onClick={() => handleDifficultySelect('hard')}
-                      className="px-4 py-2 bg-red-200 dark:bg-red-900/50 text-red-800 dark:text-red-200 rounded-lg hover:bg-red-300 dark:hover:bg-red-800/50 transition-colors"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="px-6 py-3 bg-gradient-to-r from-red-500 to-pink-500 dark:from-red-600 dark:to-pink-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
                     >
-                      Hard
-                    </button>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Click, tap, or press <strong>Space</strong> to flap
-                  </p>
+                      🔴 Hard
+                    </motion.button>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-sm text-gray-600 dark:text-gray-400 bg-white/50 dark:bg-gray-700/50 rounded-lg p-3"
+                  >
+                    <span className="font-medium">Controls:</span> Click, tap, or press <kbd className="px-2 py-1 bg-gray-200 dark:bg-gray-600 rounded text-xs font-mono">Space</kbd> to flap
+                  </motion.div>
                 </div>
               </motion.div>
             )}
           </div>
 
           {/* Game HUD */}
-          <div className="flex items-center justify-between mt-4">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              Score: <strong className="text-gray-800 dark:text-gray-200">{score}</strong>
-              {' | '}
-              High: <strong className="text-gray-800 dark:text-gray-200">{highScore}</strong>
+          <motion.div
+            className="flex items-center justify-between mt-6 p-4 bg-white/30 dark:bg-gray-800/30 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-gray-700/30"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="flex items-center gap-6">
+              <motion.div
+                className="text-center"
+                animate={{ scale: score > 0 ? [1, 1.1, 1] : 1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Score</div>
+                <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{score}</div>
+              </motion.div>
+
+              <div className="w-px h-8 bg-gray-300 dark:bg-gray-600"></div>
+
+              <div className="text-center">
+                <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Best</div>
+                <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{highScore}</div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="px-3 py-1 bg-white/50 dark:bg-gray-700/50 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300">
-                {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
-              </span>
-              <button
+
+            <div className="flex items-center gap-3">
+              <motion.div
+                className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-xl border border-blue-500/30 dark:border-purple-500/30"
+                whileHover={{ scale: 1.05 }}
+              >
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                  {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+                </span>
+              </motion.div>
+
+              <motion.button
                 onClick={() => setMuted(!muted)}
-                className="p-2 bg-white/50 dark:bg-gray-700/50 hover:bg-white/70 dark:hover:bg-gray-600/50 rounded-lg transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-3 bg-white/60 dark:bg-gray-700/60 hover:bg-white/80 dark:hover:bg-gray-600/80 rounded-xl transition-all duration-200 shadow-lg"
               >
-                {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
-              </button>
-              <button
+                {muted ? <VolumeX size={18} className="text-gray-600 dark:text-gray-400" /> : <Volume2 size={18} className="text-blue-600 dark:text-blue-400" />}
+              </motion.button>
+
+              <motion.button
                 onClick={handleRestart}
-                className="p-2 bg-white/50 dark:bg-gray-700/50 hover:bg-white/70 dark:hover:bg-gray-600/50 rounded-lg transition-colors"
+                whileHover={{ scale: 1.1, rotate: 180 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-3 bg-white/60 dark:bg-gray-700/60 hover:bg-white/80 dark:hover:bg-gray-600/80 rounded-xl transition-all duration-200 shadow-lg"
               >
-                <RotateCcw size={16} />
-              </button>
+                <RotateCcw size={18} className="text-gray-600 dark:text-gray-400" />
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
     </motion.div>

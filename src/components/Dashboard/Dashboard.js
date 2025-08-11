@@ -156,24 +156,91 @@ const Dashboard = ({ session }) => {
   });
 
   return (
-    <div className="min-h-screen">
-      <Header 
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{
+            duration: 8,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-indigo-400/20 to-pink-400/20 rounded-full blur-3xl"
+          animate={{
+            scale: [1.2, 1, 1.2],
+            opacity: [0.4, 0.7, 0.4]
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 2
+          }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-cyan-400/10 to-blue-400/10 rounded-full blur-3xl"
+          animate={{
+            rotate: [0, 360],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+
+      <Header
         user={session.user}
         onSignOut={handleSignOut}
         onShowNotes={() => setShowNotes(true)}
       />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <StatsCards tickets={filteredTickets} allTickets={tickets} dateRange={dateRange} />
+          <StatsCards
+            tickets={filteredTickets}
+            allTickets={tickets}
+            dateRange={dateRange}
+            viewMode={viewMode}
+            workDate={workDate}
+          />
 
-          <div className="mt-8 card dark:bg-gray-800/50 dark:border-gray-700/50 transition-colors duration-300">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300">Tickets</h2>
+          <motion.div
+            className="mt-8 card dark:bg-gray-800/50 dark:border-gray-700/50 transition-colors duration-300 relative overflow-hidden"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            style={{
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.15) 100%)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.3)'
+            }}
+          >
+            {/* Card shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 relative z-10">
+              <motion.h2
+                className="text-2xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-300"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                Tickets
+              </motion.h2>
               
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -205,39 +272,76 @@ const Dashboard = ({ session }) => {
             </div>
 
             {/* View Mode Controls */}
-            <div className="mb-6 p-4 bg-white/30 dark:bg-gray-800/50 backdrop-blur-sm border border-white/30 dark:border-gray-700/50 rounded-lg transition-colors duration-300">
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <div className="flex flex-wrap gap-2">
-                  <button
+            <motion.div
+              className="mb-6 p-6 bg-white/40 dark:bg-gray-800/60 backdrop-blur-xl border border-white/40 dark:border-gray-700/60 rounded-2xl transition-colors duration-300 shadow-lg dark:shadow-gray-900/20"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)'
+              }}
+            >
+              <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
+                <div className="flex flex-wrap gap-3">
+                  <motion.button
                     onClick={() => setViewMode('today')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
                       viewMode === 'today'
-                        ? 'bg-blue-500 dark:bg-blue-600 text-white shadow-lg'
-                        : 'bg-white/50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-600/50'
+                        ? 'bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white shadow-xl'
+                        : 'bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-600/70 shadow-lg'
                     }`}
                   >
-                    Today
-                  </button>
-                  <button
+                    <span className="relative z-10">📅 Today</span>
+                    {viewMode === 'today' && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500"
+                        layoutId="activeTab"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </motion.button>
+
+                  <motion.button
                     onClick={() => setViewMode('date-range')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
                       viewMode === 'date-range'
-                        ? 'bg-blue-500 dark:bg-blue-600 text-white shadow-lg'
-                        : 'bg-white/50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-600/50'
+                        ? 'bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-600 dark:to-purple-700 text-white shadow-xl'
+                        : 'bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-600/70 shadow-lg'
                     }`}
                   >
-                    Date Range
-                  </button>
-                  <button
+                    <span className="relative z-10">📊 Date Range</span>
+                    {viewMode === 'date-range' && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-purple-400 to-purple-500"
+                        layoutId="activeTab"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </motion.button>
+
+                  <motion.button
                     onClick={() => setViewMode('all-time')}
-                    className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 relative overflow-hidden ${
                       viewMode === 'all-time'
-                        ? 'bg-blue-500 dark:bg-blue-600 text-white shadow-lg'
-                        : 'bg-white/50 dark:bg-gray-700/50 text-gray-700 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-600/50'
+                        ? 'bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-700 text-white shadow-xl'
+                        : 'bg-white/60 dark:bg-gray-700/60 text-gray-700 dark:text-gray-300 hover:bg-white/80 dark:hover:bg-gray-600/70 shadow-lg'
                     }`}
                   >
-                    All Time
-                  </button>
+                    <span className="relative z-10">🕐 All Time</span>
+                    {viewMode === 'all-time' && (
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-to-r from-indigo-400 to-indigo-500"
+                        layoutId="activeTab"
+                        transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      />
+                    )}
+                  </motion.button>
                 </div>
 
                 {viewMode === 'today' && (
