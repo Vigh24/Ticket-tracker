@@ -45,3 +45,6 @@ ehthumbs.db
 
 # Environment variables (keep .env.example)
 .env
+
+# Ignore nested git repositories
+tickettrack-pro/
