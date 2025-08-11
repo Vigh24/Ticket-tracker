@@ -18,6 +18,11 @@ const AuthForm = () => {
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [isFormValid, setIsFormValid] = useState(false);
 
+  // Effect to validate form on mount and when isLogin changes
+  React.useEffect(() => {
+    validateForm();
+  }, [isLogin]);
+
   // Validation functions
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,8 +53,8 @@ const AuthForm = () => {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
-    if (!isLogin && !formData.name) {
-      newErrors.name = 'Name is required';
+    if (!isLogin && !formData.fullName) {
+      newErrors.fullName = 'Full name is required';
     }
 
     setErrors(newErrors);
@@ -77,6 +82,11 @@ const AuthForm = () => {
         [name]: ''
       });
     }
+
+    // Real-time form validation
+    setTimeout(() => {
+      validateForm();
+    }, 100);
   };
 
   const handleSubmit = async (e) => {
@@ -109,7 +119,7 @@ const AuthForm = () => {
           password: formData.password,
           options: {
             data: {
-              name: formData.name,
+              name: formData.fullName,
             }
           }
         });
@@ -204,7 +214,7 @@ const AuthForm = () => {
             </motion.p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {!isLogin && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -215,21 +225,21 @@ const AuthForm = () => {
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 transition-colors duration-300" size={20} />
                 <input
                   type="text"
-                  name="name"
+                  name="fullName"
                   placeholder="Full Name"
-                  value={formData.name}
+                  value={formData.fullName}
                   onChange={handleInputChange}
-                  className={`input-field pl-10 ${errors.name ? 'border-red-500 dark:border-red-400' : ''}`}
+                  className={`input-field pl-10 ${errors.fullName ? 'border-red-500 dark:border-red-400' : ''}`}
                   required={!isLogin}
                 />
-                {errors.name && (
+                {errors.fullName && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute -bottom-6 left-0 flex items-center gap-1 text-red-500 text-sm"
+                    className="mt-2 flex items-center gap-1 text-red-500 text-sm"
                   >
                     <AlertCircle size={14} />
-                    {errors.name}
+                    {errors.fullName}
                   </motion.div>
                 )}
               </motion.div>
@@ -260,7 +270,7 @@ const AuthForm = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute -bottom-6 left-0 flex items-center gap-1 text-red-500 text-sm"
+                  className="mt-2 flex items-center gap-1 text-red-500 text-sm"
                 >
                   <AlertCircle size={14} />
                   {errors.email}
@@ -283,8 +293,10 @@ const AuthForm = () => {
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`input-field pl-10 pr-10 ${errors.password ? 'border-red-500 dark:border-red-400' : ''}`}
+                className={`input-field pl-10 pr-12 ${errors.password ? 'border-red-500 dark:border-red-400' : ''}`}
                 required
+                autoComplete="new-password"
+                style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
               />
               <motion.button
                 type="button"
@@ -334,7 +346,7 @@ const AuthForm = () => {
                 <motion.div
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="absolute -bottom-6 left-0 flex items-center gap-1 text-red-500 text-sm"
+                  className="mt-2 flex items-center gap-1 text-red-500 text-sm"
                 >
                   <AlertCircle size={14} />
                   {errors.password}
@@ -349,11 +361,11 @@ const AuthForm = () => {
             >
               <motion.button
                 type="submit"
-                disabled={loading || !isFormValid}
+                disabled={loading || (!formData.email || !formData.password || (!isLogin && !formData.fullName))}
                 whileHover={{ scale: loading ? 1 : 1.02 }}
                 whileTap={{ scale: loading ? 1 : 0.98 }}
                 className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 relative overflow-hidden ${
-                  loading || !isFormValid
+                  loading || (!formData.email || !formData.password || (!isLogin && !formData.fullName))
                     ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed'
                     : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 shadow-lg hover:shadow-xl'
                 }`}
@@ -395,7 +407,8 @@ const AuthForm = () => {
               onClick={() => {
                 setIsLogin(!isLogin);
                 setErrors({});
-                setFormData({ email: '', password: '', name: '' });
+                setFormData({ email: '', password: '', fullName: '' });
+                setIsFormValid(false);
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
