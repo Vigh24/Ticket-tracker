@@ -377,7 +377,7 @@ const Dashboard = ({ session }) => {
                   <span>Showing all tickets across all dates</span>
                 )}
               </div>
-            </div>
+            </motion.div>
 
             {/* Search and Filter */}
             <div className="space-y-4 mb-6">

@@ -404,7 +404,7 @@ const AuthForm = () => {
               {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
             </motion.button>
           </motion.div>
-        </div>
+        </motion.div>
       </motion.div>
     </div>
   );
