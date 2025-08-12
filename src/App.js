@@ -16,17 +16,15 @@ function AppContent({ session }) {
     <div className="min-h-screen relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       {/* Dark mode animated background */}
       {isDarkMode && (
-        <div className="fixed inset-0 z-0">
-          <DarkVeil
-            hueShift={280} // Purple/blue hue
-            noiseIntensity={0.02}
-            scanlineIntensity={0.1}
-            speed={0.3}
-            scanlineFrequency={0.01}
-            warpAmount={0.1}
-            resolutionScale={0.8}
-          />
-        </div>
+        <DarkVeil
+          hueShift={280} // Purple/blue hue
+          noiseIntensity={0.02}
+          scanlineIntensity={0.1}
+          speed={0.3}
+          scanlineFrequency={0.01}
+          warpAmount={0.1}
+          resolutionScale={0.8}
+        />
       )}
 
       {/* Content overlay */}
