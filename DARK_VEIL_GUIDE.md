@@ -1,28 +1,32 @@
-# 🌌 DarkVeil - Animated Dark Mode Background
+# 🌌 DarkVeil - WebGL Animated Dark Mode Background
 
 ## Overview
 
-DarkVeil is a stunning CSS-based animated gradient background component that creates a beautiful, dynamic visual experience for dark mode in TicketTrack Pro. Inspired by modern design trends, it provides an elegant animated backdrop that enhances the user experience without compromising performance.
+DarkVeil is a stunning WebGL-based animated background component that creates a mesmerizing, dynamic visual experience for dark mode in TicketTrack Pro. Using advanced shader programming and neural network-inspired algorithms (CPPN), it generates complex, organic patterns that flow and evolve in real-time, providing an unparalleled visual backdrop.
 
 ## ✨ Features
 
-### **Animated Gradient Layers**
-- **Multiple Layers**: Three independent gradient layers create depth and complexity
-- **Smooth Animations**: Floating animations with different durations for organic movement
-- **Hue Shifting**: Customizable color schemes through CSS hue rotation
-- **Blend Modes**: Screen blend mode for luminous, ethereal effects
+### **Advanced WebGL Rendering**
+- **CPPN Algorithm**: Compositional Pattern Producing Networks for organic pattern generation
+- **Real-time Shaders**: Fragment shaders create complex, evolving visuals
+- **Neural Network Inspired**: Mathematical functions simulate neural network behavior
+- **GPU Accelerated**: Leverages graphics hardware for smooth 60fps performance
 
-### **Performance Optimized**
-- **Pure CSS**: No JavaScript runtime overhead
-- **Hardware Accelerated**: Uses CSS transforms for smooth 60fps animations
-- **Lightweight**: Minimal bundle size impact
-- **Responsive**: Adapts to all screen sizes automatically
+### **Sophisticated Effects**
+- **Hue Shifting**: Real-time color transformation through YIQ color space
+- **Noise Generation**: Procedural noise for texture and organic feel
+- **Scanline Effects**: Optional retro CRT-style scanlines
+- **Warp Distortion**: Dynamic spatial warping for fluid movement
+- **Resolution Scaling**: Adaptive quality for performance optimization
 
-### **Customizable Parameters**
-- **Hue Shift**: Adjust the color palette (default: 280° for purple/blue)
-- **Animation Speed**: Control the movement speed (default: 0.5x)
-- **Opacity**: Built-in opacity controls for subtle effects
-- **Noise Texture**: Optional noise overlay for added visual interest
+### **Extensive Customization**
+- **Hue Shift**: Real-time color transformation (0-360°)
+- **Noise Intensity**: Procedural texture strength (0.0-1.0)
+- **Scanline Intensity**: Retro CRT effect strength (0.0-1.0)
+- **Animation Speed**: Time dilation control (0.1-2.0x)
+- **Scanline Frequency**: CRT line density control
+- **Warp Amount**: Spatial distortion intensity (0.0-1.0)
+- **Resolution Scale**: Performance vs quality balance (0.5-2.0)
 
 ## 🎨 Visual Design
 

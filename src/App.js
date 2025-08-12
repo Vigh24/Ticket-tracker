@@ -19,7 +19,12 @@ function AppContent({ session }) {
         <div className="fixed inset-0 z-0">
           <DarkVeil
             hueShift={280} // Purple/blue hue
+            noiseIntensity={0.02}
+            scanlineIntensity={0.1}
             speed={0.3}
+            scanlineFrequency={0.01}
+            warpAmount={0.1}
+            resolutionScale={0.8}
           />
         </div>
       )}
