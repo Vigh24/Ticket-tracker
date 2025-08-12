@@ -13,22 +13,22 @@ function AppContent({ session }) {
   const { isDarkMode } = useTheme();
 
   return (
-    <div className="min-h-screen relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <div className="min-h-screen w-full relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-black dark:to-black transition-colors duration-300">
       {/* Dark mode animated background */}
       {isDarkMode && (
         <DarkVeil
-          hueShift={280} // Purple/blue hue
+          hueShift={270} // Deep purple hue like React Bits
           noiseIntensity={0.02}
-          scanlineIntensity={0.1}
-          speed={0.3}
-          scanlineFrequency={0.01}
-          warpAmount={0.1}
-          resolutionScale={0.8}
+          scanlineIntensity={0.05}
+          speed={0.4}
+          scanlineFrequency={0.005}
+          warpAmount={0.08}
+          resolutionScale={1.0}
         />
       )}
 
       {/* Content overlay */}
-      <div className="relative z-10">
+      <div className="relative z-20">
         <Toaster
           position="top-right"
           toastOptions={{
