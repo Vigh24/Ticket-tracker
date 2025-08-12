@@ -38,9 +38,10 @@
   }
 
   .dark .glass {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
   }
 
   .glass-dark {
@@ -62,9 +63,9 @@
   }
 
   .dark .glass-hover:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
   }
   
   .btn-primary {
@@ -86,12 +87,17 @@
   }
   
   .input-field {
-    @apply w-full px-3 py-3 bg-white/10 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-lg focus:outline-none focus:border-white/30 dark:focus:border-white/20 backdrop-blur-md transition-all duration-300 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400;
+    @apply w-full px-3 py-3 bg-white/10 border border-white/20 dark:border-white/20 rounded-lg focus:outline-none focus:border-white/30 dark:focus:border-white/30 backdrop-blur-md transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-300;
     backdrop-filter: blur(16px);
     min-height: 48px;
     line-height: 1.5;
     display: flex;
     align-items: center;
+  }
+
+  .dark .input-field {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .input-field:focus {
@@ -100,8 +106,8 @@
   }
 
   .dark .input-field:focus {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
   }
 
   .card {
@@ -113,9 +119,10 @@
   }
 
   .dark .card {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
   }
 
   .card-compact {
@@ -127,9 +134,10 @@
   }
 
   .dark .card-compact {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
   }
 }
 
