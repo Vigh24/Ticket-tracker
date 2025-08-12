@@ -222,14 +222,14 @@ const AuthForm = () => {
                 exit={{ opacity: 0, height: 0 }}
                 className="relative"
               >
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 transition-colors duration-300 z-10" size={18} />
+                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 transition-colors duration-300 z-10 pointer-events-none" size={16} />
                 <input
                   type="text"
                   name="fullName"
                   placeholder="Full Name"
                   value={formData.fullName}
                   onChange={handleInputChange}
-                  className={`input-field pl-11 ${errors.fullName ? 'border-red-500 dark:border-red-400' : ''}`}
+                  className={`input-field pl-12 ${errors.fullName ? 'border-red-500 dark:border-red-400' : ''}`}
                   required={!isLogin}
                 />
                 {errors.fullName && (
@@ -251,20 +251,20 @@ const AuthForm = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <Mail className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-300 z-10 ${
+              <Mail className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-colors duration-300 z-10 pointer-events-none ${
                 errors.email ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'
-              }`} size={18} />
+              }`} size={16} />
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className={`input-field pl-11 ${errors.email ? 'border-red-500 dark:border-red-400' : ''}`}
+                className={`input-field pl-12 ${errors.email ? 'border-red-500 dark:border-red-400' : ''}`}
                 required
               />
               {validateEmail(formData.email) && formData.email && (
-                <CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-500 z-10" size={18} />
+                <CheckCircle className="absolute right-4 top-1/2 transform -translate-y-1/2 text-green-500 z-10 pointer-events-none" size={16} />
               )}
               {errors.email && (
                 <motion.div
@@ -284,16 +284,16 @@ const AuthForm = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Lock className={`absolute left-3 top-1/2 transform -translate-y-1/2 transition-colors duration-300 z-10 ${
+              <Lock className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-colors duration-300 z-10 pointer-events-none ${
                 errors.password ? 'text-red-500' : 'text-gray-400 dark:text-gray-500'
-              }`} size={18} />
+              }`} size={16} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
-                className={`input-field pl-11 pr-12 ${errors.password ? 'border-red-500 dark:border-red-400' : ''}`}
+                className={`input-field pl-12 pr-12 ${errors.password ? 'border-red-500 dark:border-red-400' : ''}`}
                 required
                 autoComplete="new-password"
                 style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
@@ -303,9 +303,9 @@ const AuthForm = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300 z-10"
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-300 z-10 focus:outline-none"
               >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </motion.button>
 
               {/* Password strength indicator */}
