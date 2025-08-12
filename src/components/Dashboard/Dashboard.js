@@ -268,13 +268,10 @@ const Dashboard = ({ session }) => {
 
             {/* View Mode Controls */}
             <motion.div
-              className="mb-6 p-6 bg-white/40 dark:bg-gray-800/60 backdrop-blur-xl border border-white/40 dark:border-gray-700/60 rounded-2xl transition-colors duration-300 shadow-lg dark:shadow-gray-900/20"
+              className="mb-6 p-6 card-compact transition-colors duration-300"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%)'
-              }}
             >
               <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center">
                 <div className="flex flex-wrap gap-3">
