@@ -7,7 +7,9 @@ import {
   Search,
   Filter,
   CheckCircle,
-  Clock
+  Clock,
+  Heart,
+  Gift
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import Button from '../UI/Button';
@@ -20,6 +22,7 @@ import NotesPanel from '../Notes/NotesPanel';
 import ExportModal from '../Export/ExportModal';
 import DateFilter from '../UI/DateFilter';
 import CustomSelect from '../UI/CustomSelect';
+import TextScroll from '../UI/TextScroll';
 import toast from 'react-hot-toast';
 import { isWithinInterval, format, startOfDay, endOfDay } from 'date-fns';
 
@@ -205,6 +208,118 @@ const Dashboard = ({ session }) => {
       />
 
       <main className="container mx-auto px-4 py-8 relative z-10">
+        {/* Birthday Surprise for Aditi */}
+        <motion.div
+          className="mb-8 card overflow-hidden relative"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
+        >
+          {/* Animated background elements */}
+          <div className="absolute inset-0 overflow-hidden">
+            <motion.div
+              className="absolute -top-10 -right-10 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"
+              animate={{
+                scale: [1, 1.5, 1],
+                opacity: [0.3, 0.7, 0.3]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+            <motion.div
+              className="absolute -bottom-10 -left-10 w-16 h-16 bg-purple-400/20 rounded-full blur-xl"
+              animate={{
+                scale: [1.2, 1, 1.2],
+                opacity: [0.4, 0.8, 0.4]
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 1
+              }}
+            />
+          </div>
+
+          <div className="relative z-10 text-center py-6">
+            <motion.div
+              className="flex items-center justify-center gap-3 mb-4"
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+            >
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Gift className="text-pink-500 dark:text-pink-400" size={32} />
+              </motion.div>
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
+                🎉 Happy Birthday Aditi! 🎂
+              </h2>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Heart className="text-red-500 dark:text-red-400" size={32} fill="currentColor" />
+              </motion.div>
+            </motion.div>
+
+            <motion.p
+              className="text-lg text-gray-700 dark:text-gray-300 mb-6 max-w-2xl mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              Wishing our amazing team leader the happiest of birthdays! 🌟 
+              Thank you for your incredible leadership and making our team shine! ✨
+            </motion.p>
+
+            {/* Scrolling Birthday Message */}
+            <motion.div
+              className="py-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9, duration: 0.8 }}
+            >
+              <TextScroll
+                text="🎈 Happy Birthday Aditi! 🎉 Best Team Leader Ever! 🌟 Many Happy Returns! 🎂 Celebrate & Enjoy! 🎊"
+                default_velocity={2}
+                className="text-2xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent"
+              />
+            </motion.div>
+
+            <motion.div
+              className="flex justify-center gap-2 mt-4"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.2, duration: 0.6 }}
+            >
+              {['🎉', '🎂', '🎈', '🌟', '🎊', '🥳', '🎁', '💖'].map((emoji, index) => (
+                <motion.span
+                  key={index}
+                  className="text-2xl"
+                  animate={{
+                    y: [0, -10, 0],
+                    rotate: [0, 10, -10, 0]
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    delay: index * 0.2,
+                    ease: "easeInOut"
+                  }}
+                >
+                  {emoji}
+                </motion.span>
+              ))}
+            </motion.div>
+          </div>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
