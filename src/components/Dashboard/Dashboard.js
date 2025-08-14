@@ -208,114 +208,267 @@ const Dashboard = ({ session }) => {
       />
 
       <main className="container mx-auto px-4 py-8 relative z-10">
-        {/* Birthday Surprise for Aditi */}
+        {/* Birthday Surprise for Aditi - Enhanced Version */}
         <motion.div
-          className="mb-8 card overflow-hidden relative"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, type: "spring", bounce: 0.3 }}
+          className="mb-8 card overflow-hidden relative border-2 border-pink-500/30 dark:border-pink-400/30"
+          initial={{ opacity: 0, scale: 0.8, rotateY: -15 }}
+          animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+          transition={{ duration: 1.2, type: "spring", bounce: 0.4 }}
+          whileHover={{ 
+            scale: 1.02, 
+            boxShadow: "0 25px 50px -12px rgba(236, 72, 153, 0.25)",
+            transition: { duration: 0.3 }
+          }}
         >
-          {/* Animated background elements */}
+          {/* Enhanced Animated background elements */}
           <div className="absolute inset-0 overflow-hidden">
+            {/* Floating particles */}
+            {[...Array(12)].map((_, i) => (
+              <motion.div
+                key={i}
+                className={`absolute w-2 h-2 rounded-full ${
+                  i % 3 === 0 ? 'bg-pink-400/40' : 
+                  i % 3 === 1 ? 'bg-purple-400/40' : 'bg-blue-400/40'
+                }`}
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  y: [0, -20, 0],
+                  x: [0, Math.random() * 20 - 10, 0],
+                  opacity: [0.2, 0.8, 0.2],
+                  scale: [0.5, 1.2, 0.5]
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  repeat: Infinity,
+                  delay: Math.random() * 2,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
+
+            {/* Larger glowing orbs */}
             <motion.div
-              className="absolute -top-10 -right-10 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"
+              className="absolute -top-16 -right-16 w-32 h-32 bg-gradient-to-br from-pink-400/30 to-purple-400/30 rounded-full blur-2xl"
               animate={{
-                scale: [1, 1.5, 1],
-                opacity: [0.3, 0.7, 0.3]
+                scale: [1, 1.3, 1],
+                opacity: [0.3, 0.6, 0.3],
+                rotate: [0, 180, 360]
               }}
               transition={{
-                duration: 3,
+                duration: 8,
                 repeat: Infinity,
                 ease: "easeInOut"
               }}
             />
             <motion.div
-              className="absolute -bottom-10 -left-10 w-16 h-16 bg-purple-400/20 rounded-full blur-xl"
+              className="absolute -bottom-16 -left-16 w-28 h-28 bg-gradient-to-tr from-blue-400/30 to-pink-400/30 rounded-full blur-2xl"
               animate={{
                 scale: [1.2, 1, 1.2],
-                opacity: [0.4, 0.8, 0.4]
+                opacity: [0.4, 0.7, 0.4],
+                rotate: [360, 180, 0]
               }}
               transition={{
-                duration: 4,
+                duration: 10,
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: 1
+                delay: 2
               }}
             />
+
+            {/* Sparkle effects */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={`sparkle-${i}`}
+                className="absolute w-1 h-1 bg-yellow-300 rounded-full"
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: `${20 + Math.random() * 60}%`,
+                }}
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0, 1.5, 0],
+                  rotate: [0, 180, 360]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  delay: Math.random() * 3,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
           </div>
 
-          <div className="relative z-10 text-center py-6">
+          {/* Gradient overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-500/5 via-purple-500/5 to-blue-500/5 dark:from-pink-400/10 dark:via-purple-400/10 dark:to-blue-400/10" />
+
+          <div className="relative z-10 text-center py-8 px-6">
+            {/* Enhanced Header with more animations */}
             <motion.div
-              className="flex items-center justify-center gap-3 mb-4"
-              initial={{ y: -20, opacity: 0 }}
+              className="flex items-center justify-center gap-4 mb-6"
+              initial={{ y: -30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.6 }}
+              transition={{ delay: 0.4, duration: 0.8, type: "spring", bounce: 0.6 }}
             >
               <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                animate={{ 
+                  rotate: [0, 15, -15, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 3, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                whileHover={{ scale: 1.3, rotate: 360 }}
               >
-                <Gift className="text-pink-500 dark:text-pink-400" size={32} />
+                <Gift className="text-pink-500 dark:text-pink-400 drop-shadow-lg" size={40} />
               </motion.div>
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent">
-                🎉 Happy Birthday Aditi! 🎂
-              </h2>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              
+              <motion.h2 
+                className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 via-purple-500 via-blue-500 to-pink-500 bg-clip-text text-transparent bg-size-200 animate-gradient-x"
+                animate={{ 
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity, 
+                  ease: "linear" 
+                }}
               >
-                <Heart className="text-red-500 dark:text-red-400" size={32} fill="currentColor" />
+                🎉 Happy Birthday Aditi! 🎂
+              </motion.h2>
+              
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.3, 1],
+                  rotate: [0, 10, -10, 0]
+                }}
+                transition={{ 
+                  duration: 2, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                whileHover={{ scale: 1.5, rotate: 360 }}
+              >
+                <Heart className="text-red-500 dark:text-red-400 drop-shadow-lg" size={40} fill="currentColor" />
               </motion.div>
             </motion.div>
 
-            <motion.p
-              className="text-lg text-gray-700 dark:text-gray-300 mb-6 max-w-2xl mx-auto"
+            {/* Enhanced message with typewriter effect */}
+            <motion.div
+              className="mb-8"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6, duration: 0.8 }}
+              transition={{ delay: 0.8, duration: 1 }}
             >
-              Wishing our amazing team leader the happiest of birthdays! 🌟 
-              Thank you for your incredible leadership and making our team shine! ✨
-            </motion.p>
+              <motion.p
+                className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 mb-4 max-w-3xl mx-auto font-medium leading-relaxed"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.8 }}
+              >
+                🌟 Wishing our <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent font-bold">amazing team leader</span> the happiest of birthdays! 🌟
+              </motion.p>
+              
+              <motion.p
+                className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3, duration: 0.8 }}
+              >
+                Thank you for your <span className="text-purple-500 font-semibold">incredible leadership</span> and making our team shine! ✨
+              </motion.p>
+            </motion.div>
 
-            {/* Scrolling Birthday Message */}
+            {/* Enhanced Scrolling Birthday Message */}
             <motion.div
-              className="py-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.9, duration: 0.8 }}
+              className="py-6 mb-6"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.6, duration: 1, type: "spring", bounce: 0.3 }}
             >
               <TextScroll
-                text="🎈 Happy Birthday Aditi! 🎉 Best Team Leader Ever! 🌟 Many Happy Returns! 🎂 Celebrate & Enjoy! 🎊"
-                default_velocity={2}
-                className="text-2xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 bg-clip-text text-transparent"
+                text="🎈 Happy Birthday Aditi! 🎉 Best Team Leader Ever! 🌟 Many Happy Returns! 🎂 Celebrate & Enjoy! 🎊 You're Amazing! 💖"
+                default_velocity={1.5}
+                className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 via-purple-600 via-blue-600 to-pink-600 bg-clip-text text-transparent drop-shadow-sm"
               />
             </motion.div>
 
+            {/* Enhanced emoji celebration */}
             <motion.div
-              className="flex justify-center gap-2 mt-4"
-              initial={{ opacity: 0, scale: 0.8 }}
+              className="flex justify-center gap-3 mb-6"
+              initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
+              transition={{ delay: 2, duration: 0.8, type: "spring", bounce: 0.5 }}
             >
-              {['🎉', '🎂', '🎈', '🌟', '🎊', '🥳', '🎁', '💖'].map((emoji, index) => (
+              {['🎉', '🎂', '🎈', '🌟', '🎊', '🥳', '🎁', '💖', '🌺', '✨'].map((emoji, index) => (
                 <motion.span
                   key={index}
-                  className="text-2xl"
+                  className="text-3xl md:text-4xl cursor-pointer select-none"
                   animate={{
-                    y: [0, -10, 0],
-                    rotate: [0, 10, -10, 0]
+                    y: [0, -15, 0],
+                    rotate: [0, 15, -15, 0],
+                    scale: [1, 1.2, 1]
                   }}
                   transition={{
-                    duration: 2,
+                    duration: 2.5 + Math.random(),
                     repeat: Infinity,
-                    delay: index * 0.2,
+                    delay: index * 0.15,
                     ease: "easeInOut"
                   }}
+                  whileHover={{ 
+                    scale: 1.5, 
+                    rotate: 360,
+                    transition: { duration: 0.3 }
+                  }}
+                  whileTap={{ scale: 0.8 }}
                 >
                   {emoji}
                 </motion.span>
               ))}
+            </motion.div>
+
+            {/* Special birthday wish button */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.5, duration: 0.8 }}
+            >
+              <motion.button
+                className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                whileHover={{ 
+                  scale: 1.05,
+                  boxShadow: "0 20px 40px -12px rgba(236, 72, 153, 0.4)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                animate={{
+                  boxShadow: [
+                    "0 10px 20px -5px rgba(236, 72, 153, 0.2)",
+                    "0 15px 30px -5px rgba(236, 72, 153, 0.4)",
+                    "0 10px 20px -5px rgba(236, 72, 153, 0.2)"
+                  ]
+                }}
+                transition={{
+                  boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" }
+                }}
+                onClick={() => {
+                  // Create confetti effect or show special message
+                  toast.success("🎉 Happy Birthday Aditi! You're the best! 🎂", {
+                    duration: 5000,
+                    style: {
+                      background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                      color: 'white',
+                      fontWeight: 'bold'
+                    }
+                  });
+                }}
+              >
+                🎊 Send Birthday Wishes! 🎊
+              </motion.button>
             </motion.div>
           </div>
         </motion.div>
